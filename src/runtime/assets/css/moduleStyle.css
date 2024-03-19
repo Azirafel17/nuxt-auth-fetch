@@ -1,0 +1,119 @@
+@import url('./moduleRoot.css');
+
+.module-auth {
+  background-color: #fcf9f9;
+  box-shadow: var(--shadow-color);
+  transition: box-shadow 0.5s;
+  border-radius: var(--border-radius);
+  padding: 18px;
+  margin: auto;
+  margin-top: 10em;
+  width: 270px;
+  font-size: 18px;
+  font-family: var(--font-family);
+  box-sizing: content-box;
+}
+
+body:has(.module-auth) {
+  background-color: white;
+}
+
+@media screen and (max-width: 700px) {
+  .module-auth {
+    margin-top: 10em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  body {
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .module-auth {
+    width: 80%;
+    margin-top: 5em;
+  }
+}
+
+.module-auth:hover {
+  box-shadow: var(--shadow-color-hover);
+}
+
+.module-auth-input,
+.button-login {
+  border-radius: var(--border-radius);
+}
+
+.auth-input::placeholder {
+  opacity: 0.7;
+}
+
+.auth-input__wrapper {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 0px;
+  background-color: #dddbdb;
+  background-image: none;
+  border-radius: var(--border-radius);
+  border: 1px solid #dddbdb;
+  cursor: text;
+  margin-bottom: 17px;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+
+.auth-input[type='text'],
+.auth-input[type='password'] {
+  font-size: 13px;
+  width: 100%;
+  padding: 8px 8px;
+  box-sizing: border-box;
+  margin-bottom: 0px;
+  color: #7d7e81;
+  background-color: #dddbdb;
+  border: none;
+  border-radius: var(--border-radius);
+  outline: none;
+}
+
+.auth-input__wrapper:has(.auth-input:hover:not(:focus)) {
+  border: 1px solid #bebebe;
+}
+
+.auth-input__wrapper:has(.auth-input:focus) {
+  border: 1px solid #61ad1f;
+  transition: border 0.2s;
+}
+
+.button-login {
+  width: 100%;
+  background-color: #61ad1f;
+  color: white;
+  font-size: 18px;
+  font-family: var(--font-family);
+  letter-spacing: 2.44px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s;
+  height: 38px;
+  vertical-align: auto;
+  box-sizing: border-box;
+}
+
+.button-login:hover {
+  background-color: #4c8a16;
+  transition: background-color 0.2s;
+}
+
+.button-show-password {
+  cursor: pointer;
+  vertical-align: middle;
+  line-height: 0.5;
+  padding: 0px 3px;
+
+}

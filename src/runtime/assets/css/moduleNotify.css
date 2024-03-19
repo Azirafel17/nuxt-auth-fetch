@@ -1,0 +1,58 @@
+@import url('./moduleRoot.css');
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.notification {
+  font-size: 0.9em;
+  cursor: pointer;
+  max-width: 400px;
+  min-width: 200px;
+  border-radius: 5px;
+  padding: 13px 26px 13px 14px;
+  position: fixed;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  transition: all 0.5s ease;
+  font-family: Roboto, -apple-system, Helvetica Neue, Helvetica, Arial,
+    sans-serif;
+}
+
+.success {
+  background-color: rgb(33, 186, 69);
+  color: #494949;
+  border: 1px solid rgb(33, 186, 69);
+}
+
+.info {
+  background-color: rgb(49, 204, 236);
+  color: #494949;
+  border: 1px solid rgb(49, 204, 236);
+}
+
+.warning {
+  background-color: rgb(242, 192, 55);
+  color: #494949;
+  border: 1px solid rgb(242, 192, 55);
+}
+
+.error {
+  background-color: rgb(193, 0, 21);
+  color: #ffffff;
+  border: 1px solid rgb(193, 0, 21);
+}
+
+.title {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  color: #e1e4e9;
+  margin: 0;
+}

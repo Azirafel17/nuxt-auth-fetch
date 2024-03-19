@@ -1,0 +1,13 @@
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/KFOkCnqEu92Fr1MmgVxIIzQ.woff) format("woff")
+}
+
+:root {
+  --border-radius: 5px;
+  --shadow-color: rgba(0, 0, 0, .4) 0px 3px 8px;
+  --shadow-color-hover: rgba(0, 0, 0, .4) 0px 3px 15px;
+  --font-family: Roboto, -apple-system, Helvetica Neue, Helvetica, Arial, sans-serif !important
+}
