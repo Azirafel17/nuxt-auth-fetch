@@ -43,29 +43,37 @@ const authForm = reactive<AuthData>({
   password: '',
 })
 const { authDataCookies, isAccessAllowed } = $authModule()
-const { isAuth } = $useAuthorization()
+const { isAuth, AuthorizationBase, Authorization } = $useAuthorization()
 const showPassword = ref<boolean>(false)
-const login = () =>
-  $useAuthorization()
-    .AuthorizationBase({
-      data: authForm,
-      isBearer: false,
-    })
+const authFunction = !config.authFetchType
+  ? AuthorizationBase
+  : config.authFetchType === 'body'
+  ? Authorization
+  : AuthorizationBase
+
+const login = () => {
+  authFunction({
+    data: {
+      username: authForm.username.trim(),
+      password: authForm.password.trim(),
+    },
+    isBearer: false,
+  })
     .then(() => {
-      notify.success({ message: 'Вы авторизированны' })
+      notify.success({ message: '👍 Вы авторизированны' })
     })
     .catch((e) => {
       let error: string = ''
-      if (e && typeof e !== 'string') {
+      if (e && typeof e !== 'string' && e.data) {
         error = e.data.detail
       } else if (e && typeof e === 'string') {
         error = e
-      } else if (!e) {
+      } else {
         error = 'Ошибка на сервере, обратитесь к администратору системы'
       }
-      notify.warning({ message: error })
+      notify.warning({ message: '❗ ' + error })
     })
-
+}
 if (config?.dev) {
   authForm.username = config.dev.login
   authForm.password = config.dev.password

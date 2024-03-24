@@ -65,6 +65,13 @@ body:has(.module-auth) {
   transition: 0.5s;
 }
 
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus,
+.auth-input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--color-text);
+}
 
 .auth-input[type='text'],
 .auth-input[type='password'] {
@@ -73,7 +80,7 @@ body:has(.module-auth) {
   padding: 8px 8px;
   box-sizing: border-box;
   margin-bottom: 0px;
-  color: #7d7e81;
+  color: var(--color-text);
   background-color: #dddbdb;
   border: none;
   border-radius: var(--border-radius);

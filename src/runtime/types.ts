@@ -20,6 +20,9 @@ declare global {
     AuthorizationBase: (
       options: RequestOptions
     ) => Promise<{ access: string; refresh: string } | null>
+    Authorization: (
+      options: RequestOptions
+    ) => Promise<{ access: string; refresh: string } | null>
     logout: (callback?: () => void) => void
   }
   function $userLMA(): {
@@ -29,6 +32,7 @@ declare global {
   function $authModule(): {
     authDataCookies: { authData: string }
     isAccessAllowed: ComputedRef<boolean>
+    userName: ComputedRef<string>
   }
 }
 
@@ -43,6 +47,9 @@ export interface ModuleExportFunctions {
     AuthorizationBase: (
       options: RequestOptions
     ) => Promise<{ access: string; refresh: string } | null>
+    Authorization: (
+      options: RequestOptions
+    ) => Promise<{ access: string; refresh: string } | null>
     logout: (callback?: () => void) => void
   }
   $userLMA(): {
@@ -52,6 +59,7 @@ export interface ModuleExportFunctions {
   $authModule(): {
     authDataCookies: { authData: ComputedRef<string> }
     isAccessAllowed: ComputedRef<boolean>
+    userName: ComputedRef<string>
   }
 }
 
@@ -109,6 +117,9 @@ export interface ModuleUseRuntimeConfig {
     refreshKey: string
   }
   authType: AuthType
+  // basic - базовая аутентификация
+  // body - отправляет в body username / password
+  authFetchType?: 'basic' | 'body'
   // если authType === keycloak, storageType должен быть
   // cookie иначе не будет работать межклиентское общение
   storageType: StorageType

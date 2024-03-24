@@ -13,11 +13,9 @@ import { jwtDecode } from 'jwt-decode'
 // import paramModule from '#modul-options'
 import type {
   RequestOptions,
-  Tokens,
   isBearer,
   ModuleUseRuntimeConfig,
   Token,
-  StorageType,
   Keycloak,
   AvailableClients,
   UserInfoFromToken,
@@ -55,14 +53,19 @@ export default defineNuxtPlugin({
         timeout: runtimeConfig.fetch.timeout || 5000,
       },
       tokenSetting: {
-        accessKey: runtimeConfig.tokenSetting
-          ? runtimeConfig.tokenSetting.accessKey
-          : 'at',
-        refreshKey: runtimeConfig.tokenSetting
-          ? runtimeConfig.tokenSetting.refreshKey
-          : 'rt',
+        accessKey:
+          (runtimeConfig.authType === 'custom' || !runtimeConfig.authType) &&
+          runtimeConfig.tokenSetting
+            ? runtimeConfig.tokenSetting.accessKey
+            : 'atknlma',
+        refreshKey:
+          (runtimeConfig.authType === 'custom' || !runtimeConfig.authType) &&
+          runtimeConfig.tokenSetting
+            ? runtimeConfig.tokenSetting.refreshKey
+            : 'rtknlma',
       },
       authType: runtimeConfig.authType || 'custom',
+      authFetchType: runtimeConfig.authFetchType || 'basic',
       storageType: runtimeConfig.storageType || 'localStorage',
       keycloakSetting: {
         clientIdAlias: runtimeConfig.keycloakSetting?.clientIdAlias
@@ -224,6 +227,14 @@ export default defineNuxtPlugin({
     const isAccessAllowed = computed<boolean>(
       () => isAccessAllowedForUser.value
     )
+
+    const userLogin = reactive<CookieRef<string>>(
+      useCookie('unamelma', {
+        maxAge: 2592000 * 12,
+        ...cookieOptions,
+      })
+    )
+    const userName = computed<string>(() => userLogin.value)
     const groups = computed<string[]>(() => userRoleFromToken.value)
     const info = computed<UserInfoFromToken>(() => userInfoFromToken.value)
     const isAuth = computed(() => {
@@ -240,6 +251,7 @@ export default defineNuxtPlugin({
       token.refresh = undefined
     }
     const removeAuthData = () => {
+      // удаление из куков информации о авторизации
       authDataCookies.authData = undefined
     }
 
@@ -395,6 +407,29 @@ export default defineNuxtPlugin({
       return token as T
     }
 
+    const Authorization = async <T extends { access: string; refresh: string }>(
+      options: RequestOptions
+    ): Promise<T | null> => {
+      await $fetch<T>(optionsModule.fetch.loginUrl, {
+        method: 'POST',
+        body: {
+          username: options.data.username,
+          password: options.data.password,
+        },
+      })
+        .then((res) => {
+          userLogin.value = options.data.username
+          Object.assign(token, res)
+        })
+        .catch((e) => {
+          if (typeof e.data === 'string' && e.data.length > 500)
+            return Promise.reject(undefined)
+          return Promise.reject(e)
+        })
+
+      return token as T
+    }
+
     // Логаут на стороне сервера
     const logoutAPI = async (): Promise<any> => {
       if (!optionsModule.fetch.logoutUrl) {
@@ -418,23 +453,21 @@ export default defineNuxtPlugin({
       logoutAPI()
         .then((result) => {
           if (callback) callback()
-          removeToken()
-          removeAuthData()
           notify.success({ message: result })
         })
         .finally(() => {
           removeToken()
-          removeAuthData()
+          isAccessAllowedForUser.value = false
         })
     }
     // Данные для повторной авто авторизации
     globalThis.$authModule = () => {
-      return { authDataCookies, isAccessAllowed }
+      return { authDataCookies, isAccessAllowed, userName }
     }
 
     // объект для использования в приложении
     globalThis.$useAuthorization = () => {
-      return { isAuth, logout, AuthorizationBase, authReady }
+      return { isAuth, logout, AuthorizationBase, Authorization, authReady }
     }
 
     // объект пользователя Лама для использования в приложении

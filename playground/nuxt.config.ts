@@ -18,10 +18,10 @@ export default {
           refreshKey: process.env.VITE_REFRESH_KEY || '',
         },
         authType: 'keycloak', //'keycloak' : 'custom'
-        // dev: {
-        //   login: 'yardmanagement',
-        //   password: 'testUser',
-        // },
+        dev: {
+          login: 'yardmanagement',
+          password: 'testUser',
+        },
         keycloakSetting: {
           clientId: 'service-yard-management',
           clientIdAlias: 'Управление двором',
