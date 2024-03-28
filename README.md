@@ -43,20 +43,26 @@ export default defineNuxtConfig({
           logoutUrl: process.env.VITE_LOGOUT_URL || '',
           timeout: process.env.VITE_TIMEOUT,
         },
-        tokenSetting: {
+        tokenOptions: {
           accessKey: process.env.VITE_ACCESS_KEY || '',
           refreshKey: process.env.VITE_REFRESH_KEY || '',
         },
         authType: 'keycloak', //'keycloak' | 'custom'
-        dev: {
+        dev: { // не обязательная настройка
           login: 'login',
           password: 'password',
         },
-        keycloakSetting: {
+        keycloakOptions: {
           clientId: process.env.VITE_CLIENT_ID || '',
           clientIdAlias: process.env.VITE_CLIENT_ID_ALIAS || '',
           exchangeTokenBetweenClientUrl:
             process.env.VITE_EXCHANGE_TOKEN_URL || '',
+        },
+        cookieOptions:{ // не обязательная настройка
+          maxAge: process.env.VITE_COOKIE_MAX_AGE,
+          secure: process.env.VITE_COOKIE_SECURE,
+          sameSite: process.env.VITE_COOKIE_SAME_SITE,
+          priority: process.env.VITE_COOKIE_PRIORITY,
         },
       },
     },
@@ -64,28 +70,33 @@ export default defineNuxtConfig({
 })
 ```
 
-Описание блоков: 
-
+Описание блоков:
 + **fetch** (обязательные ☝)
-  ***baseUrl*** - базовый Url для fetch
-  ***refreshUrl*** - Url для обновления токена
-  ***loginUrl*** - Url для получения токена
-  ***logoutUrl*** - Url для разлогинивания
-\-
-+ **tokenSetting** (опционально)
-  ***accessKey*** - ключь для access token (по умолчанию **at**)
-  ***refreshKey*** - ключь для refresh token (по умолчанию **rt**)
-\-
-+ **authType** (опционально по умолчанию **custom**)
-  Может быть ***keycloak*** или ***custom***
-  * **keycloak** Использует Cookies для хранения токена, 
-    так же присутствует запоминание логина и пароля до момента выхода пользователя
-  * **custom** Использует LocalStorage для хранения токена
-\-
-+ **keycloakSetting** (опционально если ***authType === keycloak***)
-  ***clientId*** - Id клиента в keycloak ☝
-  ***clientIdAlias*** - Человеко понятный алиас для Id клиента (Опционально, по умолчанию = clientId)
-  ***exchangeTokenBetweenClientUrl*** - Url для обмена токена между клиентами ☝
+  - ***baseUrl*** - базовый Url для fetch
+  - ***refreshUrl*** - Url для обновления токена
+  - ***loginUrl*** - Url для получения токена
+  - ***logoutUrl*** - Url для разлогинивания
+<br/>
++ **tokenOptions** (опционально, используется только для authType: ***custom***)
+  - ***accessKey*** - ключь для access token (default value **at**)
+  - ***refreshKey*** - ключь для refresh token (default value **rt**)
+<br/>
++ **authType** (опционально default value **custom**)
+  - Возможные значения ***keycloak*** / ***custom***
+  - ***keycloak*** - Присутствует запоминание логина и пароля до момента выхода пользователя
+  - ***custom*** - В этом режиме не достпны функции $userLMA()
+<br/>
++ **keycloakOptions** (опционально если ***authType === keycloak***)
+  - ***clientId*** - Id клиента в keycloak ☝
+  - ***clientIdAlias*** - Человеко понятный алиас для Id клиента (Опционально, default value **clientId**)
+  - ***exchangeTokenBetweenClientUrl*** - Url для обмена токена между клиентами ☝
+<br/>
++ **cookieOptions** (опционально)
+  - ***maxAge*** - default value **1800** - 30 минут
+  - ***maxAgeForAuthData*** - default value **2592000** - 30 дней
+  - ***secure*** - default value **false**
+  - ***sameSite*** - default value **'lax'**
+  - ***priority*** - default value **'high'**
 
 ## Возможности 🤘🚀
 #### Кастомный fetch:
@@ -102,10 +113,10 @@ export default defineNuxtConfig({
 #### Авторизация:
 ##### Компонент \<Authorization> для работы:
 ```js
-
 <template>
   <Authorization>
-    <Your APP>
+    <template #logo>Your Logo</template>
+    Your APP
   </Authorization>
 </template>
 ```

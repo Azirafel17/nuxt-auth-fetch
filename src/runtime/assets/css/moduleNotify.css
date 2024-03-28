@@ -10,6 +10,14 @@
   opacity: 0;
 }
 
+.title {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0;
+  font-family: var(--font-family);
+}
+
 .notification {
   font-size: 0.9em;
   cursor: pointer;
@@ -21,13 +29,12 @@
   overflow-wrap: break-word;
   overflow: hidden;
   transition: all 0.5s ease;
-  font-family: Roboto, -apple-system, Helvetica Neue, Helvetica, Arial,
-    sans-serif;
+  font-family: var(--font-family);
 }
 
 .success {
   background-color: rgb(33, 186, 69);
-  color: #494949;
+  color: white;
   border: 1px solid rgb(33, 186, 69);
 }
 
@@ -47,12 +54,4 @@
   background-color: rgb(193, 0, 21);
   color: #ffffff;
   border: 1px solid rgb(193, 0, 21);
-}
-
-.title {
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 24px;
-  color: #e1e4e9;
-  margin: 0;
 }

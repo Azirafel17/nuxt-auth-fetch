@@ -1,5 +1,18 @@
 @import url('./moduleRoot.css');
 
+.module-auth-main {
+  width: 100%;
+  margin-top: 10em;
+}
+
+.module-auth-logo {
+  width: 270px;
+  padding: 18px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
 .module-auth {
   background-color: #fcf9f9;
   box-shadow: var(--shadow-color);
@@ -7,11 +20,9 @@
   border-radius: var(--border-radius);
   padding: 18px;
   margin: auto;
-  margin-top: 10em;
   width: 270px;
   font-size: 18px;
   font-family: var(--font-family);
-  box-sizing: content-box;
 }
 
 body:has(.module-auth) {
@@ -19,7 +30,7 @@ body:has(.module-auth) {
 }
 
 @media screen and (max-width: 700px) {
-  .module-auth {
+  .module-auth-main {
     margin-top: 10em;
   }
 }
@@ -30,7 +41,7 @@ body:has(.module-auth) {
     margin: 0px;
   }
 
-  .module-auth {
+  .module-auth-main {
     width: 80%;
     margin-top: 5em;
   }
@@ -65,6 +76,13 @@ body:has(.module-auth) {
   transition: 0.5s;
 }
 
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus,
+.auth-input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--color-text);
+}
 
 .auth-input[type='text'],
 .auth-input[type='password'] {
@@ -73,7 +91,7 @@ body:has(.module-auth) {
   padding: 8px 8px;
   box-sizing: border-box;
   margin-bottom: 0px;
-  color: #7d7e81;
+  color: var(--color-text);
   background-color: #dddbdb;
   border: none;
   border-radius: var(--border-radius);

@@ -1,6 +1,6 @@
 {
   "name": "lama-nuxt-auth-fetch",
-  "version": "0.1.5",
+  "version": "0.1.21",
   "description": "Модуль который содержит удобную обертку над Fetch, также в нем есть функционал авторизации",
   "repository": "git@gitlab.lama.tomsk.ru:utils/nuxt3-modules/fetch-auth.git",
   "author": {
@@ -34,8 +34,8 @@
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
-    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish --registry http://npm.lama.tomsk.ru/",
-    "release-light": "npm run prepack && changelogen --release && npm publish --registry http://npm.lama.tomsk.ru/",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish --registry https://registry.npmjs.org/",
+    "release-light-npm": "npm run prepack && changelogen --release && npm publish --registry https://registry.npmjs.org/",
     "changelogen": "changelogen --release",
     "lint": "eslint .",
     "test": "vitest run",
@@ -44,7 +44,6 @@
   "dependencies": {
     "@nuxt/kit": "^3.9.3",
     "@vueuse/core": "^10.7.2",
-    "cookiejs": "^2.1.3",
     "jwt-decode": "^4.0.0"
   },
   "devDependencies": {

@@ -78,7 +78,7 @@ const notify: NotifyFn & Partial<Notify> & { _context: AppContext | null } =
       onClose: () => {
         close(id, position, options?.onClose)
       },
-      duration: options.message ? options.message?.length * 80 : 7000,
+      duration: options.message ? options.message?.length * 90 : 7000,
     }
 
     let appendTo: HTMLElement | null = document.body

@@ -12,21 +12,23 @@ export default {
           refreshUrl: process.env.VITE_REFRESH_URL || '',
           loginUrl: process.env.VITE_LOGIN_URL || '',
           logoutUrl: process.env.VITE_LOGOUT_URL || '',
+          prefixPath: process.env.VITE_PREFIX_PATH,
         },
-        tokenSetting: {
-          accessKey: process.env.VITE_ACCESS_KEY || '',
-          refreshKey: process.env.VITE_REFRESH_KEY || '',
+        tokenOptions: {
+          accessKey: process.env.VITE_ACCESS_KEY,
+          refreshKey: process.env.VITE_REFRESH_KEY,
         },
         authType: 'keycloak', //'keycloak' : 'custom'
-        // dev: {
-        //   login: 'yardmanagement',
-        //   password: 'testUser',
-        // },
-        keycloakSetting: {
-          clientId: 'service-yard-management',
-          clientIdAlias: 'Управление двором',
+        dev: {
+          login: VITE_DEV_LOGIN,
+          password: VITE_DEV_PASSWORD,
+        },
+        keycloakOptions: {
+          clientId: process.env.VITE_CLIENT_ID,
+          clientIdAlias: process.env.VITE_CLIENT_ID_ALIAS,
           exchangeTokenBetweenClientUrl:
             process.env.VITE_EXCHANGE_TOKEN_URL || '',
+          useAutoLogin: true,
         },
       },
     },

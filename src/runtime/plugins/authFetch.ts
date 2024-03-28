@@ -3,30 +3,29 @@ import {
   type CookieRef,
   defineNuxtPlugin,
   useCookie,
-  useNuxtApp,
   useRuntimeConfig,
+  useRequestURL,
 } from '#app'
 import { computed, reactive, ref, watchEffect } from 'vue'
-import cookie from 'cookiejs'
-import { type RemovableRef, useLocalStorage } from '@vueuse/core'
 import { jwtDecode } from 'jwt-decode'
 // import paramModule from '#modul-options'
 import type {
   RequestOptions,
-  Tokens,
   isBearer,
   ModuleUseRuntimeConfig,
   Token,
-  StorageType,
-  Keycloak,
   AvailableClients,
   UserInfoFromToken,
-  CustomAuth,
   CookiesToken,
   KeyCloakJWT,
 } from '../types'
 import notify from '../composables/notify'
-import { stringToStringContainer } from '../utils/common'
+import {
+  urlPreparePrefix,
+  urlPrepare,
+  urlPreparePath,
+  stringToStringContainer,
+} from '../utils/common'
 
 export default defineNuxtPlugin({
   enforce: 'pre', // or 'post'
@@ -35,9 +34,6 @@ export default defineNuxtPlugin({
       .lamaNuxt as ModuleUseRuntimeConfig
 
     let availableClients: AvailableClients | undefined // доступные клиенты из токена пользователя
-
-    let keycloakOptions: Keycloak
-    let customOptions: CustomAuth
     const isAccessAllowedForUser = ref<boolean>(false)
     const userRoleFromToken = ref<string[]>([])
     const userInfoFromToken = ref<UserInfoFromToken>({
@@ -46,6 +42,7 @@ export default defineNuxtPlugin({
       fullName: '',
       email: '',
     })
+
     const optionsModule: Required<ModuleUseRuntimeConfig> = {
       fetch: {
         baseUrl: runtimeConfig.fetch.baseUrl,
@@ -53,89 +50,91 @@ export default defineNuxtPlugin({
         loginUrl: runtimeConfig.fetch.loginUrl,
         logoutUrl: runtimeConfig.fetch.logoutUrl,
         timeout: runtimeConfig.fetch.timeout || 5000,
+        prefixPath: runtimeConfig.fetch.prefixPath || '',
       },
-      tokenSetting: {
-        accessKey: runtimeConfig.tokenSetting
-          ? runtimeConfig.tokenSetting.accessKey
-          : 'at',
-        refreshKey: runtimeConfig.tokenSetting
-          ? runtimeConfig.tokenSetting.refreshKey
-          : 'rt',
+      tokenOptions: {
+        accessKey: !runtimeConfig.tokenOptions
+          ? 'at'
+          : runtimeConfig.authType === 'custom'
+          ? runtimeConfig.tokenOptions.accessKey
+            ? runtimeConfig.tokenOptions.accessKey
+            : 'at'
+          : 'atknlma',
+        refreshKey: !runtimeConfig.tokenOptions
+          ? 'rt'
+          : runtimeConfig.authType === 'custom'
+          ? runtimeConfig.tokenOptions.refreshKey
+            ? runtimeConfig.tokenOptions.refreshKey
+            : 'rt'
+          : 'rtknlma',
       },
       authType: runtimeConfig.authType || 'custom',
-      storageType: runtimeConfig.storageType || 'localStorage',
-      keycloakSetting: {
-        clientIdAlias: runtimeConfig.keycloakSetting?.clientIdAlias
-          ? runtimeConfig.keycloakSetting.clientIdAlias ||
-            runtimeConfig.keycloakSetting?.clientId ||
+      keycloakOptions: {
+        clientIdAlias: runtimeConfig.keycloakOptions?.clientIdAlias
+          ? runtimeConfig.keycloakOptions.clientIdAlias ||
+            runtimeConfig.keycloakOptions?.clientId ||
             ''
           : '',
-        clientId: runtimeConfig.keycloakSetting?.clientId || '',
+        clientId: runtimeConfig.keycloakOptions?.clientId || '',
         exchangeTokenBetweenClientUrl:
-          runtimeConfig.keycloakSetting?.exchangeTokenBetweenClientUrl || '',
+          runtimeConfig.keycloakOptions?.exchangeTokenBetweenClientUrl || '',
+        useAutoLogin: runtimeConfig.keycloakOptions
+          ? runtimeConfig.keycloakOptions.useAutoLogin || false
+          : false,
+      },
+      cookieOptions: {
+        maxAge: runtimeConfig.cookieOptions
+          ? runtimeConfig.cookieOptions.maxAge || 1800
+          : 1800,
+        maxAgeForAuthData: runtimeConfig.cookieOptions
+          ? runtimeConfig.cookieOptions.maxAgeForAuthData || 2592000
+          : 2592000,
+        secure: runtimeConfig.cookieOptions
+          ? runtimeConfig.cookieOptions.secure || false
+          : false,
+        sameSite: runtimeConfig.cookieOptions
+          ? runtimeConfig.cookieOptions.sameSite || 'lax'
+          : 'lax',
+        priority: runtimeConfig.cookieOptions
+          ? runtimeConfig.cookieOptions.priority || 'high'
+          : 'high',
       },
       dev: runtimeConfig.dev || { login: '', password: '' },
     }
 
-    if (optionsModule.authType === 'keycloak') {
-      keycloakOptions = {}
-      keycloakOptions.storageType = 'cookie'
-      keycloakOptions.loginUrl = optionsModule.fetch.loginUrl
-      keycloakOptions.logoutUrl = optionsModule.fetch.loginUrl
-      keycloakOptions.refreshUrl = optionsModule.fetch.refreshUrl
-      keycloakOptions.clientId = optionsModule.keycloakSetting.clientId
-      keycloakOptions.exchangeTokenBetweenClientUrl =
-        optionsModule.keycloakSetting.exchangeTokenBetweenClientUrl
-    } else if (optionsModule.authType === 'custom') {
-      customOptions = {}
-      customOptions.storageType = 'localStorage'
-      customOptions.refreshUrl = optionsModule.fetch.refreshUrl
-      customOptions.loginUrl = optionsModule.fetch.loginUrl
-    }
-
-    interface CookieOptions {
-      domain?: string | undefined
-      httpOnly?: boolean | undefined
-      maxAge?: number | undefined
-      path?: string | undefined
-      secure?: boolean | undefined
-      sameSite?: true | false | 'lax' | 'strict' | 'none' | undefined
-      priority?: 'low' | 'medium' | 'high' | undefined
-      expires?: Date | undefined
-    }
-
     const cookieOptions: CookieOptions = {
-      domain: 'localhost',
-      maxAge: 2592000,
-      secure: false,
-      sameSite: 'lax',
-      priority: 'high',
+      domain: useRequestURL().hostname || 'localhost',
+      maxAge: optionsModule.cookieOptions.maxAge,
+      secure: optionsModule.cookieOptions.secure,
+      sameSite: optionsModule.cookieOptions.sameSite,
+      priority: optionsModule.cookieOptions.priority,
+      readonly: false,
     }
 
     const token = reactive<Token | CookiesToken>({
-      access:
-        optionsModule.authType === 'custom'
-          ? useLocalStorage(optionsModule.tokenSetting.accessKey, '')
-          : useCookie(optionsModule.tokenSetting.accessKey, cookieOptions),
-      refresh:
-        optionsModule.authType === 'custom'
-          ? useLocalStorage(optionsModule.tokenSetting.refreshKey, '')
-          : useCookie(optionsModule.tokenSetting.refreshKey, cookieOptions),
+      access: useCookie(optionsModule.tokenOptions.accessKey, {
+        ...cookieOptions,
+        readonly: false,
+      }),
+      refresh: useCookie(optionsModule.tokenOptions.refreshKey, {
+        ...cookieOptions,
+        readonly: false,
+      }),
     })
 
     const authDataCookies = reactive<{ authData: CookieRef<string> }>({
       authData: useCookie('adclma', {
-        maxAge: 2592000 * 12,
         ...cookieOptions,
+        maxAge: optionsModule.cookieOptions.maxAgeForAuthData,
+        readonly: false,
       }),
     })
 
-    const getAvailableGroups = async () => {
+    const extractingDataFromToken = async () => {
       if (optionsModule.authType === 'custom') return
       if (!token.access || !token.refresh) return
       if (token.access.length === 0) return
       const jwtDecodeData = jwtDecode<KeyCloakJWT>(token.access)
-
       availableClients = {}
       const azp: string = jwtDecodeData.azp || '' //Клиент который выдал токен
       jwtDecodeData.user_group.forEach((client) => {
@@ -160,16 +159,16 @@ export default defineNuxtPlugin({
       })
 
       if (
-        optionsModule.keycloakSetting.clientId &&
+        optionsModule.keycloakOptions.clientId &&
         availableClients[
-          optionsModule.keycloakSetting
+          optionsModule.keycloakOptions
             .clientId as keyof typeof availableClients
         ]
       ) {
         // извлекаем из токена данные о пользователе
         userRoleFromToken.value =
           availableClients[
-            optionsModule.keycloakSetting
+            optionsModule.keycloakOptions
               .clientId as keyof typeof availableClients
           ]
 
@@ -181,26 +180,26 @@ export default defineNuxtPlugin({
 
       // проверки на доступ пользователя к клиенту
       if (
-        optionsModule.keycloakSetting.clientId &&
+        optionsModule.keycloakOptions.clientId &&
         !availableClients[
-          optionsModule.keycloakSetting
+          optionsModule.keycloakOptions
             .clientId as keyof typeof availableClients
         ]
       ) {
         removeToken()
         notify.warning({
-          message: `Доступ в приложение: ${optionsModule.keycloakSetting.clientIdAlias} запрещено `,
+          message: `Доступ в приложение: ${optionsModule.keycloakOptions.clientIdAlias} запрещено `,
         })
         return
       } else if (
-        optionsModule.keycloakSetting.clientId &&
-        optionsModule.keycloakSetting.clientId !== azp
+        optionsModule.keycloakOptions.clientId &&
+        optionsModule.keycloakOptions.clientId !== azp
       ) {
-        if (!keycloakOptions.exchangeTokenBetweenClientUrl) {
+        if (!optionsModule.keycloakOptions.exchangeTokenBetweenClientUrl) {
           return Promise.reject('Не задан URL для обмена токенами')
         }
         await $fetch<typeof token>(
-          keycloakOptions.exchangeTokenBetweenClientUrl,
+          optionsModule.keycloakOptions.exchangeTokenBetweenClientUrl,
           {
             baseURL: optionsModule.fetch.baseUrl,
             method: 'post',
@@ -239,15 +238,11 @@ export default defineNuxtPlugin({
       token.access = undefined
       token.refresh = undefined
     }
-    const removeAuthData = () => {
-      authDataCookies.authData = undefined
-    }
-
     const authReady = tokenReadyPromise
     let tokenRefresh: any = null
 
     watchEffect(() => {
-      getAvailableGroups().catch((error) => {
+      extractingDataFromToken().catch((error) => {
         notify.warning({ message: error })
       })
       const watchAuth = ref(isAuth.value)
@@ -255,7 +250,9 @@ export default defineNuxtPlugin({
     })
 
     globalThis.$fetch = $fetch.create({
-      baseURL: optionsModule.fetch.baseUrl,
+      baseURL:
+        urlPrepare(optionsModule.fetch.baseUrl) +
+        urlPreparePrefix(optionsModule.fetch.prefixPath),
       timeout: optionsModule.fetch.timeout,
       retryStatusCodes: [401],
       retry: 1,
@@ -310,7 +307,7 @@ export default defineNuxtPlugin({
       apiUrl: string,
       options: RequestOptions
     ): Promise<T> => {
-      return await $fetch(apiUrl, {
+      return await $fetch(urlPreparePath(apiUrl), {
         method: 'POST',
         body: { ...options.data },
         params: { ...options.params },
@@ -321,7 +318,7 @@ export default defineNuxtPlugin({
       apiUrl: string,
       options: RequestOptions
     ): Promise<T> => {
-      return await $fetch(apiUrl, {
+      return await $fetch(urlPreparePath(apiUrl), {
         method: 'GET',
         params: { ...options.params },
         isBearer: options.isBearer,
@@ -331,7 +328,7 @@ export default defineNuxtPlugin({
       apiUrl: string,
       options: RequestOptions
     ): Promise<T> => {
-      return await $fetch(apiUrl, {
+      return await $fetch(urlPreparePath(apiUrl), {
         method: 'DELETE',
         body: { ...options.data },
         params: { ...options.params },
@@ -342,7 +339,7 @@ export default defineNuxtPlugin({
       apiUrl: string,
       options: RequestOptions
     ): Promise<T> => {
-      return await $fetch(apiUrl, {
+      return await $fetch(urlPreparePath(apiUrl), {
         method: 'PUT',
         body: { ...options.data },
         params: { ...options.params },
@@ -363,7 +360,7 @@ export default defineNuxtPlugin({
       if (!optionsModule.fetch.loginUrl) {
         return Promise.reject('Не указан URL авторизации')
       }
-      await $fetch<T>(optionsModule.fetch.loginUrl, {
+      await $fetch<T>(urlPreparePath(optionsModule.fetch.loginUrl), {
         method: 'POST',
         headers: {
           Authorization: `Basic ${btoa(
@@ -373,8 +370,10 @@ export default defineNuxtPlugin({
       })
         .then((res) => {
           if (
-            !authDataCookies.authData ||
-            (authDataCookies.authData && authDataCookies.authData.length === 0)
+            optionsModule.keycloakOptions.useAutoLogin &&
+            (!authDataCookies.authData ||
+              (authDataCookies.authData &&
+                authDataCookies.authData.length === 0))
           ) {
             const authData = btoa(
               JSON.stringify({
@@ -384,6 +383,7 @@ export default defineNuxtPlugin({
             )
             Object.assign(authDataCookies, { authData })
           }
+
           Object.assign(token, res)
         })
         .catch((e) => {
@@ -418,13 +418,11 @@ export default defineNuxtPlugin({
       logoutAPI()
         .then((result) => {
           if (callback) callback()
-          removeToken()
-          removeAuthData()
           notify.success({ message: result })
         })
         .finally(() => {
           removeToken()
-          removeAuthData()
+          isAccessAllowedForUser.value = false
         })
     }
     // Данные для повторной авто авторизации

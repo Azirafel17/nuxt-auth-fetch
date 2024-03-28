@@ -94,30 +94,35 @@ export interface isBearer {
 }
 
 export type AuthType = 'keycloak' | 'custom'
-export type StorageType = 'localStorage' | 'cookie'
 
 export interface ModuleUseRuntimeConfig {
   fetch: {
     baseUrl: string
     refreshUrl: string
     loginUrl: string
-    logoutUrl?: string
-    timeout?: number
+    logoutUrl: string
+    timeout: number
+    prefixPath: string
   }
-  tokenSetting?: {
+  tokenOptions: {
     accessKey: string
     refreshKey: string
   }
   authType: AuthType
-  // если authType === keycloak, storageType должен быть
-  // cookie иначе не будет работать межклиентское общение
-  storageType: StorageType
-  keycloakSetting?: {
+  keycloakOptions?: {
     clientId: string
     clientIdAlias: string
     // Сюда отправляем access токен когда переходим с
     // клиента на клиента, для получения пары токенов
     exchangeTokenBetweenClientUrl: string
+    useAutoLogin: boolean
+  }
+  cookieOptions?: {
+    maxAge: number
+    maxAgeForAuthData: number
+    priority: 'low' | 'medium' | 'high'
+    sameSite: true | false | 'lax' | 'strict' | 'none'
+    secure: boolean
   }
   dev?: {
     login: string
@@ -137,18 +142,6 @@ export interface Token {
 export interface CookiesToken {
   access: CookieRef<string>
   refresh: CookieRef<string>
-}
-
-export interface CustomAuth {
-  storageType?: StorageType
-  loginUrl?: string
-  logoutUrl?: string
-  refreshUrl?: string
-}
-
-export interface Keycloak extends CustomAuth {
-  clientId?: string
-  exchangeTokenBetweenClientUrl?: string
 }
 
 type UserGrops = string

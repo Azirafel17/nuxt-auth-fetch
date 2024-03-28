@@ -1,5 +1,11 @@
 <template>
-  <div v-if="!isAuth"><AuthModulForm /></div>
+  <div v-if="!isAuth">
+    <AuthModulForm>
+      <template #logo>
+        <slot name="logo"></slot>
+      </template>
+    </AuthModulForm>
+  </div>
   <div v-else><slot></slot></div>
 </template>
 
