@@ -223,6 +223,14 @@ export default defineNuxtPlugin({
     const isAccessAllowed = computed<boolean>(
       () => isAccessAllowedForUser.value
     )
+
+    const userLogin = reactive<CookieRef<string>>(
+      useCookie('unamelma', {
+        maxAge: 2592000 * 12,
+        ...cookieOptions,
+      })
+    )
+    const userName = computed<string>(() => userLogin.value)
     const groups = computed<string[]>(() => userRoleFromToken.value)
     const info = computed<UserInfoFromToken>(() => userInfoFromToken.value)
     const isAuth = computed(() => {
@@ -423,16 +431,17 @@ export default defineNuxtPlugin({
         .finally(() => {
           removeToken()
           isAccessAllowedForUser.value = false
+          isAccessAllowedForUser.value = false
         })
     }
     // Данные для повторной авто авторизации
     globalThis.$authModule = () => {
-      return { authDataCookies, isAccessAllowed }
+      return { authDataCookies, isAccessAllowed, userName }
     }
 
     // объект для использования в приложении
     globalThis.$useAuthorization = () => {
-      return { isAuth, logout, AuthorizationBase, authReady }
+      return { isAuth, logout, AuthorizationBase, Authorization, authReady }
     }
 
     // объект пользователя Лама для использования в приложении

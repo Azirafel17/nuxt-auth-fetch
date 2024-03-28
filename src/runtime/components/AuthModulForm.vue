@@ -63,18 +63,23 @@ const login = () => {
   })
     .then(() => {
       notify.success({ message: '👍 Вы авторизированны' })
+      notify.success({ message: '👍 Вы авторизированны' })
     })
     .catch((e) => {
       let error: string = ''
+      if (e && typeof e !== 'string' && e.data) {
       if (e && typeof e !== 'string' && e.data) {
         error = e.data.detail
       } else if (e && typeof e === 'string') {
         error = e
       } else {
+      } else {
         error = 'Ошибка на сервере, обратитесь к администратору системы'
       }
       notify.warning({ message: '❗ ' + error })
+      notify.warning({ message: '❗ ' + error })
     })
+}
 }
 if (config?.dev) {
   authForm.username = config.dev.login

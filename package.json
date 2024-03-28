@@ -1,6 +1,6 @@
 {
   "name": "lama-nuxt-auth-fetch",
-  "version": "0.1.21",
+  "version": "0.1.5",
   "description": "Модуль который содержит удобную обертку над Fetch, также в нем есть функционал авторизации",
   "repository": "git@gitlab.lama.tomsk.ru:utils/nuxt3-modules/fetch-auth.git",
   "author": {
