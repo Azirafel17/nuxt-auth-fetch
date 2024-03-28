@@ -77,20 +77,24 @@ export default defineNuxtConfig({
   - ***loginUrl*** - Url для получения токена
   - ***logoutUrl*** - Url для разлогинивания
 <br/>
+
 + **tokenOptions** (опционально, используется только для authType: ***custom***)
   - ***accessKey*** - ключь для access token (default value **at**)
   - ***refreshKey*** - ключь для refresh token (default value **rt**)
 <br/>
+
 + **authType** (опционально default value **custom**)
   - Возможные значения ***keycloak*** / ***custom***
   - ***keycloak*** - Присутствует запоминание логина и пароля до момента выхода пользователя
   - ***custom*** - В этом режиме не достпны функции $userLMA()
 <br/>
+
 + **keycloakOptions** (опционально если ***authType === keycloak***)
   - ***clientId*** - Id клиента в keycloak ☝
   - ***clientIdAlias*** - Человеко понятный алиас для Id клиента (Опционально, default value **clientId**)
   - ***exchangeTokenBetweenClientUrl*** - Url для обмена токена между клиентами ☝
 <br/>
+
 + **cookieOptions** (опционально)
   - ***maxAge*** - default value **1800** - 30 минут
   - ***maxAgeForAuthData*** - default value **2592000** - 30 дней
