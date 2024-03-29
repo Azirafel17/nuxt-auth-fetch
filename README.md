@@ -29,11 +29,11 @@ npm install lama-nuxt-auth-fetch
 
 ```js
 export default defineNuxtConfig({
+  experimental: {
+    appManifest: false,
+  },
+  ssr: false,
   runtimeConfig: {
-    experimental: {
-      appManifest: false,
-    },
-    ssr: false,
     public: {
       lamaNuxt: {
         fetch: {
