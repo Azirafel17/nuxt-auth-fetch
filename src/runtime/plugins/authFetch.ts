@@ -31,7 +31,7 @@ export default defineNuxtPlugin({
   enforce: 'pre', // or 'post'
   async setup(nuxtApp) {
     const runtimeConfig: ModuleUseRuntimeConfig = useRuntimeConfig().public
-      .aakNuxt as ModuleUseRuntimeConfig
+      .lamaNuxt as ModuleUseRuntimeConfig
 
     let availableClients: AvailableClients | undefined // доступные клиенты из токена пользователя
     const isAccessAllowedForUser = ref<boolean>(false)
@@ -223,14 +223,6 @@ export default defineNuxtPlugin({
     const isAccessAllowed = computed<boolean>(
       () => isAccessAllowedForUser.value
     )
-
-    const userLogin = reactive<CookieRef<string>>(
-      useCookie('unamelma', {
-        maxAge: 2592000 * 12,
-        ...cookieOptions,
-      })
-    )
-    const userName = computed<string>(() => userLogin.value)
     const groups = computed<string[]>(() => userRoleFromToken.value)
     const info = computed<UserInfoFromToken>(() => userInfoFromToken.value)
     const isAuth = computed(() => {
@@ -289,7 +281,7 @@ export default defineNuxtPlugin({
           token.refresh
         ) {
           tokenRefresh ||= $fetch<typeof token>(
-            optionsModule.fetch.refreshUrl,
+            urlPreparePath(optionsModule.fetch.refreshUrl),
             {
               method: 'post',
               retry: 0,
@@ -303,7 +295,11 @@ export default defineNuxtPlugin({
             .finally(() => (tokenRefresh = null))
           await tokenRefresh
         } else if (response.status === 401 && !isBearer && response?._data) {
+          // Частный случай для авторизации
           return Promise.reject(response._data.detail)
+        } else {
+          // возвращаем ошибку в общем случае
+          return Promise.reject(response._data)
         }
       },
       onRequestError({ response }) {
@@ -311,7 +307,7 @@ export default defineNuxtPlugin({
       },
     })
 
-    globalThis.$Post = async <T>(
+    globalThis.$post = async <T>(
       apiUrl: string,
       options: RequestOptions
     ): Promise<T> => {
@@ -322,7 +318,7 @@ export default defineNuxtPlugin({
         isBearer: options.isBearer,
       })
     }
-    globalThis.$Get = async <T>(
+    globalThis.$get = async <T>(
       apiUrl: string,
       options: RequestOptions
     ): Promise<T> => {
@@ -332,7 +328,7 @@ export default defineNuxtPlugin({
         isBearer: options.isBearer,
       })
     }
-    globalThis.$Delete = async <T>(
+    globalThis.$delete = async <T>(
       apiUrl: string,
       options: RequestOptions
     ): Promise<T> => {
@@ -343,7 +339,7 @@ export default defineNuxtPlugin({
         isBearer: options.isBearer,
       })
     }
-    globalThis.$Put = async <T>(
+    globalThis.$put = async <T>(
       apiUrl: string,
       options: RequestOptions
     ): Promise<T> => {
@@ -409,7 +405,7 @@ export default defineNuxtPlugin({
         return Promise.reject('Не задан URL для logout API')
       }
 
-      return $Post(optionsModule.fetch.logoutUrl, { isBearer: true })
+      return $post(optionsModule.fetch.logoutUrl, { isBearer: true })
         .then(() => {
           return Promise.resolve('Вы произвели выход')
         })
@@ -431,17 +427,16 @@ export default defineNuxtPlugin({
         .finally(() => {
           removeToken()
           isAccessAllowedForUser.value = false
-          isAccessAllowedForUser.value = false
         })
     }
     // Данные для повторной авто авторизации
     globalThis.$authModule = () => {
-      return { authDataCookies, isAccessAllowed, userName }
+      return { authDataCookies, isAccessAllowed }
     }
 
     // объект для использования в приложении
     globalThis.$useAuthorization = () => {
-      return { isAuth, logout, AuthorizationBase, Authorization, authReady }
+      return { isAuth, logout, AuthorizationBase, authReady }
     }
 
     // объект пользователя Лама для использования в приложении

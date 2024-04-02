@@ -5,13 +5,28 @@
     </div>
     <form class="module-auth" @submit.prevent.stop="login">
       <div class="auth-input__wrapper">
-        <input class="auth-input" v-model="authForm.username" type="text" name="Логин" placeholder="Логин"
-          maxlength="30" />
+        <input
+          class="auth-input"
+          v-model="authForm.username"
+          type="text"
+          name="Логин"
+          placeholder="Логин"
+          maxlength="30"
+        />
       </div>
       <div class="auth-input__wrapper">
-        <input class="auth-input" v-model="authForm.password" :type="showPassword ? 'text' : 'password'" name="password"
-          placeholder="Пароль" maxlength="40" />
-        <span class="button-show-password" @click="showPassword = !showPassword">
+        <input
+          class="auth-input"
+          v-model="authForm.password"
+          :type="showPassword ? 'text' : 'password'"
+          name="password"
+          placeholder="Пароль"
+          maxlength="40"
+        />
+        <span
+          class="button-show-password"
+          @click="showPassword = !showPassword"
+        >
           <CloseEye v-if="!showPassword" />
           <OpenEye v-else />
         </span>
@@ -29,7 +44,8 @@ import notify from '../composables/notify'
 import CloseEye from './CloseEye.vue'
 import OpenEye from './OpenEye.vue'
 
-const config = useRuntimeConfig().public.aakNuxt as ModuleUseRuntimeConfig
+const config = useRuntimeConfig().public
+  .lamaNuxt as unknown as ModuleUseRuntimeConfig
 
 const authForm = reactive<AuthData>({
   username: '',
@@ -42,6 +58,7 @@ const login = () => {
   AuthorizationBase({
     data: {
       username: authForm.username.trim(),
+      password: authForm.password.trim(),
     },
     isBearer: false,
   })
@@ -64,9 +81,10 @@ if (config?.dev) {
   authForm.username = config.dev.login
   authForm.password = config.dev.password
 } else if (
+  config.authType === 'keycloak' &&
+  config.keycloakOptions &&
   config.keycloakOptions.useAutoLogin &&
-  authDataCookies.authData &&
-  config.authType === 'keycloak'
+  authDataCookies.authData
 ) {
   const autData = JSON.parse(atob(authDataCookies.authData)) as AuthData
   authForm.username = atob(autData.username)

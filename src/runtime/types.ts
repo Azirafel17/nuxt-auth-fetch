@@ -10,17 +10,14 @@ export interface UserInfoFromToken {
 }
 
 declare global {
-  function $Post<T>(apiUrl: string, options: RequestOptions): Promise<T>
-  function $Get<T>(apiUrl: string, options: RequestOptions): Promise<T>
-  function $Put<T>(apiUrl: string, options: RequestOptions): Promise<T>
-  function $Delete<T>(apiUrl: string, options: RequestOptions): Promise<T>
+  function $post<T>(apiUrl: string, options: RequestOptions): Promise<T>
+  function $get<T>(apiUrl: string, options: RequestOptions): Promise<T>
+  function $put<T>(apiUrl: string, options: RequestOptions): Promise<T>
+  function $delete<T>(apiUrl: string, options: RequestOptions): Promise<T>
   function $useAuthorization(): {
     isAuth: ComputedRef<boolean>
     authReady: Promise<unknown>
     AuthorizationBase: (
-      options: RequestOptions
-    ) => Promise<{ access: string; refresh: string } | null>
-    Authorization: (
       options: RequestOptions
     ) => Promise<{ access: string; refresh: string } | null>
     logout: (callback?: () => void) => void
@@ -32,22 +29,18 @@ declare global {
   function $authModule(): {
     authDataCookies: { authData: string }
     isAccessAllowed: ComputedRef<boolean>
-    userName: ComputedRef<string>
   }
 }
 
 export interface ModuleExportFunctions {
-  $Post<T>(apiUrl: string, options: RequestOptions): Promise<T>
-  $Delete<T>(apiUrl: string, options: RequestOptions): Promise<T>
-  $Put<T>(apiUrl: string, options: RequestOptions): Promise<T>
-  $Get<T>(apiUrl: string, options: RequestOptions): Promise<T>
+  $post<T>(apiUrl: string, options: RequestOptions): Promise<T>
+  $delete<T>(apiUrl: string, options: RequestOptions): Promise<T>
+  $put<T>(apiUrl: string, options: RequestOptions): Promise<T>
+  $get<T>(apiUrl: string, options: RequestOptions): Promise<T>
   $useAuthorization(): {
     isAuth: ComputedRef<boolean>
     authReady: Promise<unknown>
     AuthorizationBase: (
-      options: RequestOptions
-    ) => Promise<{ access: string; refresh: string } | null>
-    Authorization: (
       options: RequestOptions
     ) => Promise<{ access: string; refresh: string } | null>
     logout: (callback?: () => void) => void
@@ -59,7 +52,6 @@ export interface ModuleExportFunctions {
   $authModule(): {
     authDataCookies: { authData: ComputedRef<string> }
     isAccessAllowed: ComputedRef<boolean>
-    userName: ComputedRef<string>
   }
 }
 
