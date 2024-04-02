@@ -1,31 +1,31 @@
 
 ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D) ![Nuxtjs](https://img.shields.io/badge/Nuxt-002E3B?style=for-the-badge&logo=nuxtdotjs&logoColor=#00DC82) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
-# lama-nuxt-auth-fetch ✌😺
+# aak-nuxt-auth-fetch ✌😺
 
 ## Установка
 
-1. Добавить **`lama-nuxt-auth-fetch`** в зависимости своего проекта ✨
+1. Добавить **`aak-nuxt-auth-fetch`** в зависимости своего проекта ✨
 
 ```bash
 # Using pnpm
-pnpm add lama-nuxt-auth-fetch
+pnpm add aak-nuxt-auth-fetch
 
 # Using yarn
-yarn add lama-nuxt-auth-fetch
+yarn add aak-nuxt-auth-fetch
 
 # Using npm
-npm install lama-nuxt-auth-fetch
+npm install aak-nuxt-auth-fetch
 ```
 1. Добавить модуль в зависимости Nuxt в твой **`nuxt.config.ts`** ✨
 
 ```js
   modules: [
-    ['lama-nuxt-auth-fetch'],
+    ['aak-nuxt-auth-fetch'],
   ],
 ```
 
-2. Добавить блок для **`lama-nuxt-auth-fetch`** в твой **`nuxt.config.ts`** `runtimeConfig` ✨
+2. Добавить блок для **`aak-nuxt-auth-fetch`** в твой **`nuxt.config.ts`** `runtimeConfig` ✨
 
 ```js
 export default defineNuxtConfig({
@@ -35,7 +35,7 @@ export default defineNuxtConfig({
   ssr: false,
   runtimeConfig: {
     public: {
-      lamaNuxt: {
+      aakNuxt: {
         fetch: {
           baseUrl: process.env.VITE_BASE_URL || '',
           refreshUrl: process.env.VITE_REFRESH_URL || '',

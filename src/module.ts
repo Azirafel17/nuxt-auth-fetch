@@ -11,8 +11,8 @@ import type { ModuleUseRuntimeConfig } from './runtime/types'
 
 export default defineNuxtModule<ModuleUseRuntimeConfig>({
   meta: {
-    name: '@lama-nuxt-auth-fetch',
-    configKey: 'LamaNuxtAuthFetch',
+    name: 'aak-nuxt-auth-fetch',
+    configKey: 'AakNuxtAuthFetch',
     compatibility: {
       nuxt: '^3.7.0',
     },
