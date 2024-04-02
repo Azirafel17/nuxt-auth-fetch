@@ -1,5 +1,5 @@
 {
-  "name": "lama-nuxt-auth-fetch",
+  "name": "aak-nuxt-auth-fetch",
   "version": "0.1.6",
   "description": "Модуль который содержит удобную обертку над Fetch и функционал авторизации",
   "repository": "https://github.com/Azirafel17/nuxt-auth-fetch",

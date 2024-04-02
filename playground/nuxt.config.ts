@@ -6,7 +6,7 @@ export default {
   modules: ['../src/module'],
   runtimeConfig: {
     public: {
-      lamaNuxt: {
+      aakNuxt: {
         fetch: {
           baseUrl: process.env.VITE_BASE_URL || '',
           refreshUrl: process.env.VITE_REFRESH_URL || '',

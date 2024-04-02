@@ -5,28 +5,13 @@
     </div>
     <form class="module-auth" @submit.prevent.stop="login">
       <div class="auth-input__wrapper">
-        <input
-          class="auth-input"
-          v-model="authForm.username"
-          type="text"
-          name="Логин"
-          placeholder="Логин"
-          maxlength="30"
-        />
+        <input class="auth-input" v-model="authForm.username" type="text" name="Логин" placeholder="Логин"
+          maxlength="30" />
       </div>
       <div class="auth-input__wrapper">
-        <input
-          class="auth-input"
-          v-model="authForm.password"
-          :type="showPassword ? 'text' : 'password'"
-          name="password"
-          placeholder="Пароль"
-          maxlength="40"
-        />
-        <span
-          class="button-show-password"
-          @click="showPassword = !showPassword"
-        >
+        <input class="auth-input" v-model="authForm.password" :type="showPassword ? 'text' : 'password'" name="password"
+          placeholder="Пароль" maxlength="40" />
+        <span class="button-show-password" @click="showPassword = !showPassword">
           <CloseEye v-if="!showPassword" />
           <OpenEye v-else />
         </span>
@@ -44,7 +29,7 @@ import notify from '../composables/notify'
 import CloseEye from './CloseEye.vue'
 import OpenEye from './OpenEye.vue'
 
-const config = useRuntimeConfig().public.lamaNuxt as ModuleUseRuntimeConfig
+const config = useRuntimeConfig().public.aakNuxt as ModuleUseRuntimeConfig
 
 const authForm = reactive<AuthData>({
   username: '',
@@ -57,29 +42,23 @@ const login = () => {
   AuthorizationBase({
     data: {
       username: authForm.username.trim(),
-      password: authForm.password.trim(),
     },
     isBearer: false,
   })
     .then(() => {
       notify.success({ message: '👍 Вы авторизированны' })
-      notify.success({ message: '👍 Вы авторизированны' })
     })
     .catch((e) => {
       let error: string = ''
-      if (e && typeof e !== 'string' && e.data) {
       if (e && typeof e !== 'string' && e.data) {
         error = e.data.detail
       } else if (e && typeof e === 'string') {
         error = e
       } else {
-      } else {
         error = 'Ошибка на сервере, обратитесь к администратору системы'
       }
       notify.warning({ message: '❗ ' + error })
-      notify.warning({ message: '❗ ' + error })
     })
-}
 }
 if (config?.dev) {
   authForm.username = config.dev.login

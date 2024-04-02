@@ -31,7 +31,7 @@ export default defineNuxtPlugin({
   enforce: 'pre', // or 'post'
   async setup(nuxtApp) {
     const runtimeConfig: ModuleUseRuntimeConfig = useRuntimeConfig().public
-      .lamaNuxt as ModuleUseRuntimeConfig
+      .aakNuxt as ModuleUseRuntimeConfig
 
     let availableClients: AvailableClients | undefined // доступные клиенты из токена пользователя
     const isAccessAllowedForUser = ref<boolean>(false)
