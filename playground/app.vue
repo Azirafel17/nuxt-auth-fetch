@@ -52,7 +52,7 @@ const { isAuth, logout } = $useAuthorization()
 const infoCompany = ref()
 
 function testAPI() {
-  $Post<string>('check_access', { isBearer: true })
+  $post<string>('check_access', { isBearer: true })
     .then((res) => {
       notify.success({ message: 'Запрос произведен удачно' })
     })
