@@ -45,7 +45,7 @@ import CloseEye from './CloseEye.vue'
 import OpenEye from './OpenEye.vue'
 
 const config = useRuntimeConfig().public
-  .lamaNuxt as unknown as ModuleUseRuntimeConfig
+  .aakNuxt as unknown as ModuleUseRuntimeConfig
 
 const authForm = reactive<AuthData>({
   username: '',

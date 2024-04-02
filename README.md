@@ -106,10 +106,10 @@ export default defineNuxtConfig({
 #### Кастомный fetch:
 ##### Досупные следующие глобальные функции:
 ```js
-  $Post<Return type/interface>('api url',{ data, isBearer: true })
-  $Get<Return type/interface>('api url',{ params, isBearer: true })
-  $Put<Return type/interface>('api url',{ data, isBearer: true })
-  $Delete<Return type/interface>('api url',{ data, isBearer: true })
+  $post<Return type/interface>('api url',{ data, isBearer: true })
+  $get<Return type/interface>('api url',{ params, isBearer: true })
+  $put<Return type/interface>('api url',{ data, isBearer: true })
+  $delete<Return type/interface>('api url',{ data, isBearer: true })
 
   где isBearer - обязательный атрибут
 ```

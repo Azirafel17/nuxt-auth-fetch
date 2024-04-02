@@ -20,8 +20,8 @@ export default {
         },
         authType: 'keycloak', //'keycloak' : 'custom'
         dev: {
-          login: VITE_DEV_LOGIN,
-          password: VITE_DEV_PASSWORD,
+          login: process.env.VITE_DEV_LOGIN,
+          password: process.env.VITE_DEV_PASSWORD,
         },
         keycloakOptions: {
           clientId: process.env.VITE_CLIENT_ID,
