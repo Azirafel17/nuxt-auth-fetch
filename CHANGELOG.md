@@ -1,4 +1,18 @@
 
+## v0.1.11
+
+[compare changes](https://github.com/Azirafel17/nuxt-auth-fetch/compare/v0.1.10...v0.1.11)
+
+### 🏡 Chore
+
+- **release:** V0.1.8 ([d95ea16](https://github.com/Azirafel17/nuxt-auth-fetch/commit/d95ea16))
+- **release:** V0.1.9 ([2f6efe8](https://github.com/Azirafel17/nuxt-auth-fetch/commit/2f6efe8))
+- **release:** V0.1.10 ([938a34e](https://github.com/Azirafel17/nuxt-auth-fetch/commit/938a34e))
+
+### ❤️ Contributors
+
+- Альмухаметов Амир <aak@lama.tomsk.ru>
+
 ## v0.1.10
 
 [compare changes](https://github.com/Azirafel17/nuxt-auth-fetch/compare/v0.1.9...v0.1.10)
