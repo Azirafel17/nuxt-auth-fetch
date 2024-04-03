@@ -3,9 +3,12 @@
 
 # aak-nuxt-auth-fetch ✌😺
 
-## Установка
+### Additionally 😀
+If you use **Swagger** on your the backend, then you can use the **[aak-swagger-typescript-api](https://www.npmjs.com/package/aak-swagger-typescript-api)** package to automatically generate types and classes for interaction in the backend 
 
-1. Добавить **`aak-nuxt-auth-fetch`** в зависимости своего проекта ✨
+## 📦 Get Started
+
+1. Install  **`aak-nuxt-auth-fetch`** as project dependency✨
 
 ```bash
 # Using pnpm
@@ -17,7 +20,7 @@ yarn add aak-nuxt-auth-fetch
 # Using npm
 npm install aak-nuxt-auth-fetch
 ```
-1. Добавить модуль в зависимости Nuxt в твой **`nuxt.config.ts`** ✨
+1. Add it to the modules section of your **`nuxt.config.ts`**:✨
 
 ```js
   modules: [
@@ -25,7 +28,7 @@ npm install aak-nuxt-auth-fetch
   ],
 ```
 
-2. Добавить блок для **`aak-nuxt-auth-fetch`** в твой **`nuxt.config.ts`** `runtimeConfig` ✨
+2. Add a block for **`aak-nuxt-auth-fetch`** to your **`nuxt.config.ts`** `runtimeConfig ✨
 
 ```js
 export default defineNuxtConfig({
@@ -47,8 +50,8 @@ export default defineNuxtConfig({
           accessKey: process.env.VITE_ACCESS_KEY || '',
           refreshKey: process.env.VITE_REFRESH_KEY || '',
         },
-        authType: 'keycloak', //'keycloak' | 'custom'
-        dev: { // не обязательная настройка
+        authType: 'keycloak', // 'keycloak' | 'custom'
+        dev: { // optional setting
           login: 'login',
           password: 'password',
         },
@@ -58,7 +61,7 @@ export default defineNuxtConfig({
           exchangeTokenBetweenClientUrl:
             process.env.VITE_EXCHANGE_TOKEN_URL || '',
         },
-        cookieOptions:{ // не обязательная настройка
+        cookieOptions:{ // optional setting
           maxAge: process.env.VITE_COOKIE_MAX_AGE,
           secure: process.env.VITE_COOKIE_SECURE,
           sameSite: process.env.VITE_COOKIE_SAME_SITE,
@@ -70,52 +73,51 @@ export default defineNuxtConfig({
 })
 ```
 
-Описание блоков:
-+ **fetch** (обязательные ☝)
-  - ***baseUrl*** - базовый Url для fetch
-  - ***refreshUrl*** - Url для обновления токена
-  - ***loginUrl*** - Url для получения токена
-  - ***logoutUrl*** - Url для разлогинивания
+Description of the blocks:
++ **fetch** (required ☝)
+  - ***baseUrl*** - the base URL for fetch
+  - ***refreshUrl*** - The URL for refresh the token
+  - ***loginUrl*** - Login URL
+  - ***logoutUrl*** - logout URL
 <br/>
 
-+ **tokenOptions** (опционально, используется только для authType: ***custom***)
-  - ***accessKey*** - ключь для access token (default value **at**)
-  - ***refreshKey*** - ключь для refresh token (default value **rt**)
++ **tokenOptions** (optional, used only for AuthType: ***custom***)
+  - ***accessKey*** - key for access token (default value **at**)
+  - ***refreshKey*** - key for refresh token (default value **rt**)
 <br/>
 
-+ **authType** (опционально default value **custom**)
-  - Возможные значения ***keycloak*** / ***custom***
-  - ***keycloak*** - Присутствует запоминание логина и пароля до момента выхода пользователя
-  - ***custom*** - В этом режиме не достпны функции $userLMA()
++ **authType** (optional, default value **custom**)
+  - Possible values ***keycloak*** / ***custom***
+  - ***keycloak*** - There is a memorization of the username and password until the user logs out
+  - ***custom*** - The $userLMA() functions are not available in this mode
 <br/>
 
-+ **keycloakOptions** (опционально если ***authType === keycloak***)
-  - ***clientId*** - Id клиента в keycloak ☝
-  - ***clientIdAlias*** - Человеко понятный алиас для Id клиента (Опционально, default value **clientId**)
-  - ***exchangeTokenBetweenClientUrl*** - Url для обмена токена между клиентами ☝
++ **keycloakOptions** (optional if ***AuthType === keycloak***)
+  - ***clientId*** - Client ID in keycloak ☝
+  - ***clientIdAlias*** - Alias for the client's ID (optional, default value **clientId**)
+  - ***exchangeTokenBetweenClientUrl*** - URL for token exchange between clients ☝
 <br/>
 
-+ **cookieOptions** (опционально)
-  - ***maxAge*** - default value **1800** - 30 минут
-  - ***maxAgeForAuthData*** - default value **2592000** - 30 дней
++ **cookieOptions** (optional)
+  - ***maxAge*** - default value **1800** - 30 min
+  - ***maxAgeForAuthData*** - default value **2592000** - 30 days
   - ***secure*** - default value **false**
   - ***sameSite*** - default value **'lax'**
   - ***priority*** - default value **'high'**
 
-## Возможности 🤘🚀
-#### Кастомный fetch:
-##### Досупные следующие глобальные функции:
+## Сapability 🤘🚀
+#### Custom fetch:
+##### You can use the following global functions:
 ```js
-  $post<Return type/interface>('api url',{ data, isBearer: true })
-  $get<Return type/interface>('api url',{ params, isBearer: true })
-  $put<Return type/interface>('api url',{ data, isBearer: true })
-  $delete<Return type/interface>('api url',{ data, isBearer: true })
-
-  где isBearer - обязательный атрибут
+  $post<Return type/interface>('api_path',{ data, isBearer: true })
+  $get<Return type/interface>('api_path',{ params, isBearer: true })
+  $put<Return type/interface>('api_path',{ data, isBearer: true })
+  $delete<Return type/interface>('api_path',{ data, isBearer: true })
 ```
+Where **isBearer** is a required attribute
 
-#### Авторизация:
-##### Компонент \<Authorization> для работы:
+#### Authorization:
+##### The *\<Authorization>* component for use in \<template>:
 ```js
 <template>
   <Authorization>
@@ -124,37 +126,39 @@ export default defineNuxtConfig({
   </Authorization>
 </template>
 ```
-##### Досупные следующие глобальные функции и объекты:
+##### You can use the following global functions and ref variables:
 ```js
-  //@ Авторизация, доступна во всех режимах authType
+  // Authorization, available in all AuthType modes
   const { isAuth, logout } = $useAuthorization()
 
-  isAuth: ComputedRef<boolean> // Признак авторизации полльзователя
+  // The sign of user authorization
+  isAuth: ComputedRef<boolean> 
   watch(isAuth, async (value) => {
     if (value) {
-      console.log('Я авторизировался')
+      console.log('I logged in')
     }
   })
 
-  logout: (callback?: () => void) => void // Функция выхода из системы, может принимать callBack
+  // Logout function, can accept callback
+  logout: (callback?: () => void) => void 
 
-  //@ Данные пользователя, доступны только в режиме authType === 'keycloak'
+  // User data, available only in AuthType mode === 'keycloak'
   const { info, groups } = $userLMA()
 
-  info - Инфо о пользователе из сервиса SSO, имеет следующий интерфейс:
-    interface UserInfoFromToken {
-      name: string
-      lastName: string
-      fullName: string
-      email: string
-    } 
+  // info - Information about the user from the SSO service, has the following interface:
+  interface UserInfoFromToken {
+    name: string
+    lastName: string
+    fullName: string
+    email: string
+  } 
 
-  groups - Группы пользователя в текущем сервисе, имеет следующий тип:
-    string[]
+  // groups - The user's groups in the current service, has the following type:
+  groups: string[]
 
 ```
 
-### Если все получилось, молодец! 🎉
+### If everything worked out, well done! 🎉
 
 ## Development
 
