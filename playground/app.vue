@@ -50,6 +50,9 @@ const { isAuth, logout } = $useAuthorization()
 //   }
 // })
 const infoCompany = ref()
+watch(isAuth, (value) => {
+  if (value) localStorage.setItem('test', 'test')
+})
 
 function testAPI() {
   $post<string>('check_access', { isBearer: true })
@@ -62,7 +65,7 @@ function testAPI() {
 }
 
 function logoutLocal() {
-  logout()
+  logout(() => localStorage.clear())
   infoCompany.value = null
 }
 </script>

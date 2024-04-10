@@ -75,35 +75,36 @@ export default defineNuxtConfig({
 
 Description of the blocks:
 + **fetch** (required ☝)
-  - ***baseUrl*** - the base URL for fetch
-  - ***refreshUrl*** - The URL for refresh the token
-  - ***loginUrl*** - Login URL
-  - ***logoutUrl*** - logout URL
+  - ***baseUrl*** **: string** - the base URL for fetch
+  - ***refreshUrl*** **: string** - The URL for refresh the token
+  - ***loginUrl*** **: string** - Login URL
+  - ***logoutUrl*** **: string** - logout URL
+  - ***prefixPath*** **: string** - Path prefix (optional, default value '') exemple: 'api'
 <br/>
 
 + **tokenOptions** (optional, used only for AuthType: ***custom***)
-  - ***accessKey*** - key for access token (default value **at**)
-  - ***refreshKey*** - key for refresh token (default value **rt**)
+  - ***accessKey*** **: string** - key for access token (default value **at**)
+  - ***refreshKey*** **: string** - key for refresh token (default value **rt**)
 <br/>
 
-+ **authType** (optional, default value **custom**)
-  - Possible values ***keycloak*** / ***custom***
++ **authType** **: 'keycloak' | 'custom'** (optional, default value **custom**)
   - ***keycloak*** - There is a memorization of the username and password until the user logs out
   - ***custom*** - The $userLMA() functions are not available in this mode
 <br/>
 
 + **keycloakOptions** (optional if ***AuthType === keycloak***)
-  - ***clientId*** - Client ID in keycloak ☝
-  - ***clientIdAlias*** - Alias for the client's ID (optional, default value **clientId**)
-  - ***exchangeTokenBetweenClientUrl*** - URL for token exchange between clients ☝
+  - ***clientId*** **: string** - Client ID in keycloak ☝
+  - ***clientIdAlias*** **: string** - Alias for the client's ID (optional, default value **clientId**)
+  - ***exchangeTokenBetweenClientUrl*** **: string** - URL for token exchange between clients ☝
+  - ***useAutoLogin*** **: boolean** - Allows you to log in automatically if the refresh token is expired
 <br/>
 
 + **cookieOptions** (optional)
-  - ***maxAge*** - default value **1800** - 30 min
-  - ***maxAgeForAuthData*** - default value **2592000** - 30 days
-  - ***secure*** - default value **false**
-  - ***sameSite*** - default value **'lax'**
-  - ***priority*** - default value **'high'**
+  - ***maxAge*** **: number** - default value **1800** - 30 min
+  - ***maxAgeForAuthData*** **: number** - default value **2592000** - 30 days
+  - ***secure*** **: boolen** - default value **false**
+  - ***sameSite*** **: 'strict' | 'lax' | 'none'** - default value **'lax'**
+  - ***priority*** **: 'low' | 'medium' | 'high'** - default value **'high'**
 
 ## Сapability 🤘🚀
 #### Custom fetch:

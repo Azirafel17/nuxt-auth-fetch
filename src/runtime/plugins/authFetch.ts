@@ -421,6 +421,7 @@ export default defineNuxtPlugin({
     const logout = (callback?: () => void) => {
       logoutAPI()
         .then((result) => {
+          console.log(callback)
           if (callback) callback()
           notify.success({ message: result })
         })
