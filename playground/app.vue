@@ -40,7 +40,6 @@
 
 <script setup lang="ts">
 import notify from '../src/runtime/composables/notify'
-
 const { info, groups } = $userLMA()
 const { isAuth, logout } = $useAuthorization()
 

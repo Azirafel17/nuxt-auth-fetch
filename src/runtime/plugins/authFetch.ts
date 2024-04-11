@@ -5,6 +5,7 @@ import {
   useCookie,
   useRuntimeConfig,
   useRequestURL,
+  refreshCookie,
 } from '#app'
 import { computed, reactive, ref, watchEffect } from 'vue'
 import { jwtDecode } from 'jwt-decode'
@@ -13,7 +14,6 @@ import type {
   RequestOptions,
   isBearer,
   ModuleUseRuntimeConfig,
-  Token,
   AvailableClients,
   UserInfoFromToken,
   CookiesToken,
@@ -26,7 +26,6 @@ import {
   urlPreparePath,
   stringToStringContainer,
 } from '../utils/common'
-
 export default defineNuxtPlugin({
   enforce: 'pre', // or 'post'
   async setup(nuxtApp) {
@@ -111,7 +110,7 @@ export default defineNuxtPlugin({
       readonly: false,
     }
 
-    const token = reactive<Token | CookiesToken>({
+    const token = reactive<CookiesToken>({
       access: useCookie(optionsModule.tokenOptions.accessKey, {
         ...cookieOptions,
         readonly: false,
@@ -234,10 +233,14 @@ export default defineNuxtPlugin({
       tokenPromiseResolve = resolve
     })
 
-    const removeToken = () => {
-      token.access = undefined
-      token.refresh = undefined
+    const removeAuthDataCookies = () => {
+      authDataCookies.authData = ''
     }
+    const removeToken = () => {
+      token.access = ''
+      token.refresh = ''
+    }
+
     const authReady = tokenReadyPromise
     let tokenRefresh: any = null
 
@@ -256,11 +259,21 @@ export default defineNuxtPlugin({
       timeout: optionsModule.fetch.timeout,
       retryStatusCodes: [401],
       retry: 1,
-      onRequest({ options }) {
+      async onRequest({ options }) {
+        refreshCookie(optionsModule.tokenOptions.accessKey)
         const optionsWithIsBearer: typeof options & isBearer = options
         const isBearer: boolean = optionsWithIsBearer.isBearer || false
         if (isBearer) {
-          if (!token.access) throw new Error('Нет access токена')
+          if (
+            document.cookie.indexOf(optionsModule.tokenOptions.accessKey) ===
+              -1 ||
+            document.cookie.indexOf(optionsModule.tokenOptions.refreshKey) ===
+              -1
+          ) {
+            removeToken()
+            removeAuthDataCookies()
+            return Promise.reject('Нет access токена')
+          }
           options.headers = {
             ...options.headers,
             Authorization: `Bearer ${token.access}`,
@@ -421,7 +434,6 @@ export default defineNuxtPlugin({
     const logout = (callback?: () => void) => {
       logoutAPI()
         .then((result) => {
-          console.log(callback)
           if (callback) callback()
           notify.success({ message: result })
         })
