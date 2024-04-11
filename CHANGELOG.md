@@ -1,4 +1,8 @@
 
+## v0.1.15
+
+[compare changes](https://github.com/Azirafel17/nuxt-auth-fetch/compare/v0.1.14...v0.1.15)
+
 ## v0.1.14
 
 [compare changes](https://github.com/Azirafel17/nuxt-auth-fetch/compare/v0.1.13...v0.1.14)
