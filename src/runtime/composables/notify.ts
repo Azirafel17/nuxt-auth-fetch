@@ -52,15 +52,16 @@ let countIdx = 1
 const offset = 16
 
 const notify: NotifyFn & Partial<Notify> & { _context: AppContext | null } =
-  function (options = {}, context: AppContext | null = null) {
-    if (typeof options.message !== 'string') return { close: () => undefined }
-    if (typeof options === 'string') {
-      options = { message: options }
+  function (_options = {}, context: AppContext | null = null) {
+    let options: NotificationProps = {}
+    if (typeof _options === 'string') {
+      options.message = _options
+    } else {
+      options = { ..._options }
     }
-
-    let verticalOffset = options?.offset || 0
-    const position: Position = options?.position || 'top-right'
-
+    if (typeof options.message !== 'string') return { close: () => undefined }
+    let verticalOffset = options.offset || 0
+    const position: Position = options.position || 'top-right'
     notifications[position].forEach(({ vm }) => {
       verticalOffset += vm.el?.offsetHeight || 0
       if (vm.el?.offsetHeight) verticalOffset += offset
@@ -68,20 +69,29 @@ const notify: NotifyFn & Partial<Notify> & { _context: AppContext | null } =
     verticalOffset += offset
     const id = `notification_${countIdx++}`
 
+    const preDuration: number = options.message
+      ? options.message?.length * 90
+      : 7000
+
     const props: Partial<NotificationProps> = {
       title: options.title,
       message: options.message,
       offset: verticalOffset,
-      position: position,
+      position,
       id,
       type: options.type,
       onClose: () => {
         close(id, position, options?.onClose)
       },
-      duration: options.message ? options.message?.length * 90 : 7000,
+      duration:
+        typeof options.duration === 'undefined'
+          ? preDuration < 4000
+            ? 4000
+            : preDuration
+          : options.duration,
     }
 
-    let appendTo: HTMLElement | null = document.body
+    const appendTo: HTMLElement | null = document.body
     const container = document.createElement('div')
     const vm = createVNode(Notify, props)
 

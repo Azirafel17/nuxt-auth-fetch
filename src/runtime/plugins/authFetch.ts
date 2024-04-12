@@ -5,7 +5,6 @@ import {
   useCookie,
   useRuntimeConfig,
   useRequestURL,
-  refreshCookie,
 } from '#app'
 import { computed, reactive, ref, watchEffect } from 'vue'
 import { jwtDecode } from 'jwt-decode'
@@ -25,12 +24,19 @@ import {
   urlPrepare,
   urlPreparePath,
   stringToStringContainer,
+  getCookieByName,
+  checkConfig,
+  plagConfig,
 } from '../utils/common'
 export default defineNuxtPlugin({
-  enforce: 'pre', // or 'post'
+  enforce: 'pre',
   async setup(nuxtApp) {
-    const runtimeConfig: ModuleUseRuntimeConfig = useRuntimeConfig().public
+    let runtimeConfig: ModuleUseRuntimeConfig = useRuntimeConfig().public
       .aakNuxt as ModuleUseRuntimeConfig
+
+    if (!checkConfig(runtimeConfig)) {
+      runtimeConfig = plagConfig()
+    }
 
     let availableClients: AvailableClients | undefined // доступные клиенты из токена пользователя
     const isAccessAllowedForUser = ref<boolean>(false)
@@ -260,15 +266,12 @@ export default defineNuxtPlugin({
       retryStatusCodes: [401],
       retry: 1,
       async onRequest({ options }) {
-        refreshCookie(optionsModule.tokenOptions.accessKey)
         const optionsWithIsBearer: typeof options & isBearer = options
         const isBearer: boolean = optionsWithIsBearer.isBearer || false
         if (isBearer) {
           if (
-            document.cookie.indexOf(optionsModule.tokenOptions.accessKey) ===
-              -1 ||
-            document.cookie.indexOf(optionsModule.tokenOptions.refreshKey) ===
-              -1
+            !getCookieByName(optionsModule.tokenOptions.accessKey) ||
+            !getCookieByName(optionsModule.tokenOptions.refreshKey)
           ) {
             removeToken()
             removeAuthDataCookies()
@@ -444,7 +447,7 @@ export default defineNuxtPlugin({
     }
     // Данные для повторной авто авторизации
     globalThis.$authModule = () => {
-      return { authDataCookies, isAccessAllowed }
+      return { authDataCookies, isAccessAllowed, optionsModule }
     }
 
     // объект для использования в приложении
@@ -456,5 +459,6 @@ export default defineNuxtPlugin({
     globalThis.$userLMA = () => {
       return { groups, info }
     }
+
   },
 })

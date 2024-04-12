@@ -29,6 +29,7 @@ declare global {
   function $authModule(): {
     authDataCookies: { authData: string }
     isAccessAllowed: ComputedRef<boolean>
+    optionsModule: ModuleUseRuntimeConfig
   }
 }
 

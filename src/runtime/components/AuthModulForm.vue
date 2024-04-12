@@ -37,21 +37,17 @@
 </template>
 
 <script setup lang="ts">
-import type { AuthData, ModuleUseRuntimeConfig } from '../types'
-import { useRuntimeConfig } from '#app'
+import type { AuthData } from '../types'
 import { reactive, ref } from 'vue'
 import notify from '../composables/notify'
 import CloseEye from './CloseEye.vue'
 import OpenEye from './OpenEye.vue'
 
-const config = useRuntimeConfig().public
-  .aakNuxt as unknown as ModuleUseRuntimeConfig
-
 const authForm = reactive<AuthData>({
   username: '',
   password: '',
 })
-const { authDataCookies, isAccessAllowed } = $authModule()
+const { authDataCookies, isAccessAllowed, optionsModule } = $authModule()
 const { isAuth, AuthorizationBase } = $useAuthorization()
 const showPassword = ref<boolean>(false)
 const login = () => {
@@ -77,13 +73,13 @@ const login = () => {
       notify.warning({ message: '❗ ' + error })
     })
 }
-if (config?.dev) {
-  authForm.username = config.dev.login
-  authForm.password = config.dev.password
+if (optionsModule?.dev) {
+  authForm.username = optionsModule.dev.login
+  authForm.password = optionsModule.dev.password
 } else if (
-  config.authType === 'keycloak' &&
-  config.keycloakOptions &&
-  config.keycloakOptions.useAutoLogin &&
+  optionsModule.authType === 'keycloak' &&
+  optionsModule.keycloakOptions &&
+  optionsModule.keycloakOptions.useAutoLogin &&
   authDataCookies.authData
 ) {
   const autData = JSON.parse(atob(authDataCookies.authData)) as AuthData

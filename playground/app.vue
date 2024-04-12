@@ -1,4 +1,8 @@
 <template>
+  <pre
+    >{{ getCookieByName('atknlma') }}
+</pre
+  >
   <Authorization>
     <template #logo>
       <svg
@@ -42,7 +46,7 @@
 import notify from '../src/runtime/composables/notify'
 const { info, groups } = $userLMA()
 const { isAuth, logout } = $useAuthorization()
-
+import { getCookieByName } from '../src/runtime/utils/common';
 // watch(isAuth, async (value) => {
 //   if (isAuth.value) {
 //     console.log('Я авторизировался')

@@ -1,3 +1,6 @@
+import notify from '../composables/notify'
+import type { ModuleUseRuntimeConfig } from '../types'
+
 export const stringToStringContainer = (
   str: string,
   separator: string = ','
@@ -6,6 +9,16 @@ export const stringToStringContainer = (
     .split(separator)
     .map((item) => item.trim())
     .filter((item) => item.length >= 1)
+}
+
+export function getCookieByName(name: string) {
+  const cookie = document.cookie
+  const output: { [key: string]: string } = {}
+  cookie.split(/\s*;\s*/).forEach(function (_pair) {
+    const pair = _pair.split(/\s*=\s*/)
+    output[pair[0]] = pair.splice(1).join('=')
+  })
+  return output[`${name}`]
 }
 
 const urlValidatorPath = (_path: string): string => {
@@ -36,4 +49,44 @@ export const urlPreparePrefix = (_prefix: string): string => {
     prefix = prefix.slice(1, prefix.length)
   }
   return urlValidatorPath(prefix)
+}
+
+export const checkConfig = (_confing: ModuleUseRuntimeConfig): boolean => {
+  let message: string = ''
+  if (!_confing) {
+    message = 'aakNuxt is not specified in nuxtConfig - runtimeConfig - public'
+  }
+  if (!_confing?.fetch) {
+    message =
+      'fetch is not specified in nuxtConfig - runtimeConfig - public - aakNuxt'
+  }
+
+  if (message) {
+    notify.error({
+      title: 'The aak-nuxt-auth-fetch module is not configured',
+      message,
+      duration: 0,
+    })
+    console.error(message)
+    return false
+  }
+  return true
+}
+
+export const plagConfig = (): ModuleUseRuntimeConfig => {
+  return {
+    fetch: {
+      baseUrl: '',
+      refreshUrl: '',
+      loginUrl: '',
+      logoutUrl: '',
+      prefixPath: '',
+      timeout: 0,
+    },
+    tokenOptions: {
+      accessKey: '',
+      refreshKey: '',
+    },
+    authType: 'keycloak',
+  }
 }
