@@ -24,7 +24,6 @@ import {
   urlPrepare,
   urlPreparePath,
   stringToStringContainer,
-  getCookieByName,
   checkConfig,
   plagConfig,
 } from '../utils/common'
@@ -38,7 +37,7 @@ export default defineNuxtPlugin({
       runtimeConfig = plagConfig()
     }
 
-    let availableClients: AvailableClients | undefined // доступные клиенты из токена пользователя
+    let availableClients: AvailableClients | undefined // available clients from the user's token
     const isAccessAllowedForUser = ref<boolean>(false)
     const userRoleFromToken = ref<string[]>([])
     const userInfoFromToken = ref<UserInfoFromToken>({
@@ -141,7 +140,7 @@ export default defineNuxtPlugin({
       if (token.access.length === 0) return
       const jwtDecodeData = jwtDecode<KeyCloakJWT>(token.access)
       availableClients = {}
-      const azp: string = jwtDecodeData.azp || '' //Клиент который выдал токен
+      const azp: string = jwtDecodeData.azp || '' //The client who issued the token
       jwtDecodeData.user_group.forEach((client) => {
         let keyGroup: string = ''
         stringToStringContainer(client.substring(1), '/').forEach(
@@ -170,7 +169,7 @@ export default defineNuxtPlugin({
             .clientId as keyof typeof availableClients
         ]
       ) {
-        // извлекаем из токена данные о пользователе
+        // extracting user data from the token
         userRoleFromToken.value =
           availableClients[
             optionsModule.keycloakOptions
@@ -183,7 +182,7 @@ export default defineNuxtPlugin({
         userInfoFromToken.value.name = jwtDecodeData.given_name || ''
       }
 
-      // проверки на доступ пользователя к клиенту
+      // checks for user access to the client
       if (
         optionsModule.keycloakOptions.clientId &&
         !availableClients[
@@ -269,13 +268,8 @@ export default defineNuxtPlugin({
         const optionsWithIsBearer: typeof options & isBearer = options
         const isBearer: boolean = optionsWithIsBearer.isBearer || false
         if (isBearer) {
-          if (
-            !getCookieByName(optionsModule.tokenOptions.accessKey) ||
-            !getCookieByName(optionsModule.tokenOptions.refreshKey)
-          ) {
-            removeToken()
-            removeAuthDataCookies()
-            return Promise.reject('Нет access токена')
+          if (!token.access || !token.refresh) {
+            throw new Error('There is no access/refresh token')
           }
           options.headers = {
             ...options.headers,
@@ -459,6 +453,5 @@ export default defineNuxtPlugin({
     globalThis.$userLMA = () => {
       return { groups, info }
     }
-
   },
 })

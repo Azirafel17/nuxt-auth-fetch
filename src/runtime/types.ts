@@ -113,8 +113,6 @@ export interface ModuleUseRuntimeConfig {
   keycloakOptions?: {
     clientId: string
     clientIdAlias: string
-    // Сюда отправляем access токен когда переходим с
-    // клиента на клиента, для получения пары токенов
     exchangeTokenBetweenClientUrl: string
     useAutoLogin: boolean
   }

@@ -68,6 +68,7 @@ export default defineNuxtConfig({
           priority: process.env.VITE_COOKIE_PRIORITY,
         },
       },
+      authDev: false,
     },
   },
 })
@@ -105,6 +106,11 @@ Description of the blocks:
   - ***secure*** **: boolen** - default value **false**
   - ***sameSite*** **: 'strict' | 'lax' | 'none'** - default value **'lax'**
   - ***priority*** **: 'low' | 'medium' | 'high'** - default value **'high'**
+  
+  <br />
++ **authDev** (optional)**: boolean | undefind**
+  - If this parameter is set to **true**, the authorization check in the module is disabled
+
 
 ## Сapability 🤘🚀
 #### Custom fetch:

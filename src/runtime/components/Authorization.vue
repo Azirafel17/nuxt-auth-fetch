@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isAuth">
+  <div v-if="config.public.authDev ? !config.public.authDev : !isAuth">
     <AuthModulForm>
       <template #logo>
         <slot name="logo"></slot>
@@ -11,6 +11,8 @@
 
 <script setup lang="ts">
 import AuthModulForm from './AuthModulForm.vue'
+import { useRuntimeConfig } from '#app'
 const { isAuth } = $useAuthorization()
+const config = useRuntimeConfig()
 </script>
 <style></style>

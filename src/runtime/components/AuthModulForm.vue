@@ -59,7 +59,7 @@ const login = () => {
     isBearer: false,
   })
     .then(() => {
-      notify.success({ message: '👍 Вы авторизированны' })
+      notify.success({ message: '👍 Вы успешно авторизовались' })
     })
     .catch((e) => {
       let error: string = ''

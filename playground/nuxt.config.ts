@@ -31,6 +31,7 @@ export default {
           useAutoLogin: true,
         },
       },
+      authDev: true,
     },
     secret: {},
   },
